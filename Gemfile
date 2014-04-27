@@ -9,7 +9,7 @@ gem "builder", "3.0.0"
 gem "mime-types"
 gem "awesome_nested_set", "2.1.6"
 
-gem 'capistrano'
+gem "capistrano"
 gem 'rvm-capistrano'
 
 gem "pg", ">= 0.11.0"
