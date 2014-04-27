@@ -3,7 +3,7 @@ require "rvm/capistrano"
 
 server "212.71.239.153", :web, :app, :db, primary: true
 
-set :application, "redmine"
+set :application, "redmine1"
 set :user, "mike"
 set :port, 22
 set :deploy_to, "/home/#{user}/apps/#{application}"
