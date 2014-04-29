@@ -62,8 +62,14 @@ if File.exists?(local_gemfile)
 end
 
 # Load plugins' Gemfiles
-Dir.glob File.expand_path("../plugins/*/Gemfile", __FILE__) do |file|
-  puts "Loading #{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
-  #TODO: switch to "eval_gemfile file" when bundler >= 1.2.0 will be required (rails 4)
-  instance_eval File.read(file), file
-end
+# Dir.glob File.expand_path("../plugins/*/Gemfile", __FILE__) do |file|
+#   puts "Loading #{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
+#   #TODO: switch to "eval_gemfile file" when bundler >= 1.2.0 will be required (rails 4)
+#   instance_eval File.read(file), file
+# end
+
+# plugin redmine_contacts
+gem "acts-as-taggable-on", "~> 2.3.1"
+gem "vcard", "~> 0.2.8"
+gem "spreadsheet", "~> 0.6.8"
+gem "money", "~> 5.1.0"
