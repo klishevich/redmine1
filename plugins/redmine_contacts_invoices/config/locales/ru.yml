@@ -192,3 +192,21 @@ ru:
   #3.1.1
   label_invoice_hours: часы
   label_invoice_email_curent_user: Email текущего пользователя
+
+  #my custom stuff
+  text_payment_example: Образец заполнения платежного поручения
+  text_reciever: Получатель
+  text_reciever_rekv: 'ИНН/КПП 5408290560/540801001 ООО "Бизнес-Оптимизация"'
+  text_account: 'Сч. No'
+  text_account_rekv: '40702810708400000708'
+  text_bank: Банк получателя
+  text_bik: БИК
+  text_bik_rekv: '046577859'
+  text_bank_rekv: '"Банк24.ру" (ОАО) г.Екатеринбург'
+  text_bank_account_rekv: '30101810600000000859'
+  text_from: 'от'
+  text_to_pay: 'К оплате'
+  text_no_nds: 'Без НДС'
+  text_usn: ' (ООО "Бизнес-Оптимизация" работает по УСН)'
+  text_director: 'Директор'
+  text_director_fio: '(М.А. Клишевич)' 

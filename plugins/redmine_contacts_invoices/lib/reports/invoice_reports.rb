@@ -69,57 +69,81 @@ module RedmineInvoices
         pdf.text_box "#{InvoicesSettings[:invoices_company_info, invoice.project].to_s}",
           :at => [0, pdf.cursor], :width => 140
 
+        # pdf.text "test text"
 
-        invoice_data = [
-          [l(:field_invoice_number) + ":",
-          invoice.number],
-          [l(:field_invoice_date) + ":",
-          format_date(invoice.invoice_date)]]
+        # invoice_data = [
+        #   [l(:field_invoice_number) + ":",
+        #   invoice.number],
+        #   [l(:field_invoice_date) + ":",
+        #   format_date(invoice.invoice_date)]]
 
-        invoice_data << [l(:field_invoice_due_date) + ":", format_date(invoice.due_date)] if invoice.due_date
-        invoice_data << [l(:field_invoice_order_number) + ":", invoice.order_number] unless invoice.order_number.blank?
-        invoice_data << [l(:field_invoice_subject) + ":", invoice.subject] unless invoice.subject.blank?
+        # invoice_data << [l(:field_invoice_due_date) + ":", format_date(invoice.due_date)] if invoice.due_date
+        # invoice_data << [l(:field_invoice_order_number) + ":", invoice.order_number] unless invoice.order_number.blank?
+        # invoice_data << [l(:field_invoice_subject) + ":", invoice.subject] unless invoice.subject.blank?
 
-        invoice.custom_values.each do |custom_value|
-          if !custom_value.value.blank? && custom_value.custom_field.is_for_all?
-            invoice_data << [custom_value.custom_field.name + ":",
-                             RedmineContacts::CSVUtils.csv_custom_value(custom_value)]
-          end
-        end
+        # invoice.custom_values.each do |custom_value|
+        #   if !custom_value.value.blank? && custom_value.custom_field.is_for_all?
+        #     invoice_data << [custom_value.custom_field.name + ":",
+        #                      RedmineContacts::CSVUtils.csv_custom_value(custom_value)]
+        #   end
+        # end
 
-        invoice_data << [l(:label_invoice_bill_to) + ":",
-                         "#{contact.name}
-                         #{contact.address ? contact.post_address : ''}
-                         #{get_contact_extra_field(contact)}"]
+        # invoice_data << [l(:label_invoice_bill_to) + ":",
+        #                  "#{contact.name}
+        #                  #{contact.address ? contact.post_address : ''}
+        #                  #{get_contact_extra_field(contact)}"]
 
-        # , :borders => []
+        # # , :borders => []
 
-        pdf.bounding_box [pdf.bounds.width - 250, pdf.bounds.height + 10], :width => 250 do
-          # pdf.stroke_bounds
-          pdf.fill_color "cccccc"
-          pdf.text l(:label_invoice), :align => :right, :style => :bold, :size => 30
-          # pdf.text_box l(:label_invoice), :at => [pdf.bounds.width - 100, pdf.bounds.height + 10],
-          #              :style => :bold, :size => 30, :color => 'cccccc', :align => :right, :valign => :top,
-          #              :width => 100, :height => 50,
-          #              :overflow => :shrink_to_fit
+        # pdf.bounding_box [pdf.bounds.width - 250, pdf.bounds.height + 10], :width => 250 do
+        #   # pdf.stroke_bounds
+        #   pdf.fill_color "cccccc"
+        #   pdf.text l(:label_invoice), :align => :right, :style => :bold, :size => 30
+        #   # pdf.text_box l(:label_invoice), :at => [pdf.bounds.width - 100, pdf.bounds.height + 10],
+        #   #              :style => :bold, :size => 30, :color => 'cccccc', :align => :right, :valign => :top,
+        #   #              :width => 100, :height => 50,
+        #   #              :overflow => :shrink_to_fit
 
-          pdf.fill_color "000000"
+        #   pdf.fill_color "000000"
 
-        # pdf.grid([1,0], [1,1]).bounding_box do
-          pdf.table invoice_data, :cell_style => {:padding => [-3, 5, 3, 5], :borders => []} do |t|
-            t.columns(0).font_style = :bold
-            # t.columns(0).text_color = "990000"
-            t.columns(0).width = 100
-            t.columns(0).align = :right
-            t.columns(1).width = 150
-          end
-        end
+        # # pdf.grid([1,0], [1,1]).bounding_box do
+        #   pdf.table invoice_data, :cell_style => {:padding => [-3, 5, 3, 5], :borders => []} do |t|
+        #     t.columns(0).font_style = :bold
+        #     # t.columns(0).text_color = "990000"
+        #     t.columns(0).width = 100
+        #     t.columns(0).align = :right
+        #     t.columns(1).width = 150
+        #   end
+        # end
         pdf.move_down(30)
-        classic_table(pdf, invoice)
-        if InvoicesSettings[:invoices_bill_info, invoice.project]
-          pdf.text InvoicesSettings[:invoices_bill_info, invoice.project]
-        end
+
+        pdf.text l(:text_payment_example), :style => :bold, :align => :center
         pdf.move_down(10)
+
+        payment_details(pdf, invoice)
+        pdf.move_down(20)
+
+        pdf.text l(:label_invoice) + " N " + invoice.number + " " + 
+                 l(:text_from) + " " + format_date(invoice.invoice_date), :style => :bold, 
+                 :size => 16, :align => :center
+        pdf.move_down(20)    
+
+        pdf.text "#{l(:label_invoice_bill_to)}: #{contact.name}"       
+        pdf.move_down(10)
+
+        classic_table(pdf, invoice)
+        # if InvoicesSettings[:invoices_bill_info, invoice.project]
+        #   pdf.text InvoicesSettings[:invoices_bill_info, invoice.project]
+        # end
+        pdf.text l(:text_to_pay) + ": " + price_to_currency(invoice.subtotal, invoice.currency, :converted => false, :symbol => false),
+                 :style => :bold, :size => 12
+        pdf.move_down(10)
+        pdf.text l(:text_no_nds)
+        pdf.move_down(10)
+        pdf.text l(:text_usn)
+        pdf.move_down(10)
+        stamp_busation(pdf, invoice)
+        pdf.move_down(10)        
         pdf.text invoice.description
         pdf.number_pages "<page>/<total>", {:at => [pdf.bounds.right - 150, -10], :width => 150,
                   :align => :right} if pdf.page_number > 1
@@ -155,6 +179,23 @@ module RedmineInvoices
         end
 
         pdf.stamp_at "draft", [(pdf.bounds.width / 2) - stamp_text_width / 2, (pdf.bounds.height / 2) ] unless stamp_text.blank?
+      end
+
+      def payment_details(pdf, invoice)
+        data = [ [l(:text_reciever), "", ""],
+                 [l(:text_reciever_rekv), l(:text_account), l(:text_account_rekv)],
+                 [l(:text_bank), l(:text_bik), l(:text_bik_rekv)],
+                 [l(:text_bank_rekv), l(:text_account), l(:text_bank_account_rekv)]
+               ]
+        pdf.table data, :width => pdf.bounds.width, :cell_style => {:padding => [-3, 5, 3, 5]},
+                        :column_widths => {1 => 40, 2 => 120} do
+          cells.borders = []
+          row(0).borders = [:top, :right, :left]
+          row(1).borders = [:right, :left]
+          row(2).borders = [:top, :right, :left]
+          row(3).borders = [:bottom, :right, :left]
+          row(3).columns(1).borders = [:top, :bottom, :right, :left]
+        end
       end
 
       def classic_table(pdf, invoice)
@@ -216,6 +257,13 @@ module RedmineInvoices
           t.row(invoice.lines.count + 2..invoice.lines.count + 6).borders = []
           t.row(invoice.lines.count + 2..invoice.lines.count + 6).font_style = :bold
         end
+      end
+
+      def stamp_busation(pdf, invoice)
+        data = [[l(:text_director), "", l(:text_director_fio)]]
+        pdf.table data, :width => pdf.bounds.width, :column_widths => {0 => 100, 2 => 200} do
+          cells.borders = []
+        end          
       end
     end
   end
