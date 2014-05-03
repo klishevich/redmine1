@@ -137,14 +137,14 @@ module RedmineInvoices
         # end
         pdf.text l(:text_to_pay) + ": " + price_to_currency(invoice.subtotal, invoice.currency, :converted => false, :symbol => false),
                  :style => :bold, :size => 12
+        pdf.move_down(10)        
+        pdf.text invoice.description
         pdf.move_down(10)
         pdf.text l(:text_no_nds)
         pdf.move_down(10)
         pdf.text l(:text_usn)
         pdf.move_down(10)
         stamp_busation(pdf, invoice)
-        pdf.move_down(10)        
-        pdf.text invoice.description
         pdf.number_pages "<page>/<total>", {:at => [pdf.bounds.right - 150, -10], :width => 150,
                   :align => :right} if pdf.page_number > 1
         pdf.repeat(lambda{ |pg| pg > 1}) do
@@ -260,9 +260,12 @@ module RedmineInvoices
       end
 
       def stamp_busation(pdf, invoice)
-        data = [[l(:text_director), "", l(:text_director_fio)]]
-        pdf.table data, :width => pdf.bounds.width, :column_widths => {0 => 100, 2 => 200} do
+        image = Rails.root.to_s +  "/plugins/redmine_contacts_invoices/assets/images/stamp_bo.png"
+        data = [[l(:text_director), {:image => image, :fit => [210, 315]}, l(:text_director_fio)]]
+        pdf.table data, :width => pdf.bounds.width, :column_widths => {0 => 100, 2 => 180}, 
+                        :cell_style => {:valign => :center} do
           cells.borders = []
+          columns(0).align = :right
         end          
       end
     end
