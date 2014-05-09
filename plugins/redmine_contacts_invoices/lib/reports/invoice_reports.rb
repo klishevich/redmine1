@@ -62,40 +62,15 @@ module RedmineInvoices
         # pdf.font("Times-Roman")
         pdf.default_leading -5
         status_stamp(pdf, invoice)
-        # pdf.move_down(10)
-        pdf.text InvoicesSettings[:invoices_company_name, invoice.project].to_s, :style => :bold, :size => 18
-        # pdf.move_down(5)
-        pdf.text InvoicesSettings[:invoices_company_representative, invoice.project].to_s if InvoicesSettings[:invoices_company_representative, invoice.project]
-        pdf.text_box "#{InvoicesSettings[:invoices_company_info, invoice.project].to_s}",
-          :at => [0, pdf.cursor], :width => 140
-
-        # pdf.text "test text"
-
-        # invoice_data = [
-        #   [l(:field_invoice_number) + ":",
-        #   invoice.number],
-        #   [l(:field_invoice_date) + ":",
-        #   format_date(invoice.invoice_date)]]
-
-        # invoice_data << [l(:field_invoice_due_date) + ":", format_date(invoice.due_date)] if invoice.due_date
-        # invoice_data << [l(:field_invoice_order_number) + ":", invoice.order_number] unless invoice.order_number.blank?
-        # invoice_data << [l(:field_invoice_subject) + ":", invoice.subject] unless invoice.subject.blank?
-
-        # invoice.custom_values.each do |custom_value|
-        #   if !custom_value.value.blank? && custom_value.custom_field.is_for_all?
-        #     invoice_data << [custom_value.custom_field.name + ":",
-        #                      RedmineContacts::CSVUtils.csv_custom_value(custom_value)]
-        #   end
-        # end
-
-        # invoice_data << [l(:label_invoice_bill_to) + ":",
-        #                  "#{contact.name}
-        #                  #{contact.address ? contact.post_address : ''}
-        #                  #{get_contact_extra_field(contact)}"]
-
-        # # , :borders => []
-
-        # pdf.bounding_box [pdf.bounds.width - 250, pdf.bounds.height + 10], :width => 250 do
+        #header
+        logo_bo_image = Rails.root.to_s +  "/plugins/redmine_contacts_invoices/assets/images/logo_bo.png"
+        pdf.image logo_bo_image
+        pdf.bounding_box [pdf.bounds.width - 450, pdf.bounds.height + 10], :width => 450 do
+          pdf.text InvoicesSettings[:invoices_company_name, invoice.project].to_s, :style => :bold, :size => 18
+          pdf.text InvoicesSettings[:invoices_company_representative, invoice.project].to_s if InvoicesSettings[:invoices_company_representative, invoice.project]
+          pdf.text_box "#{InvoicesSettings[:invoices_company_info, invoice.project].to_s}",
+            :at => [0, pdf.cursor], :width => 140
+        end
         #   # pdf.stroke_bounds
         #   pdf.fill_color "cccccc"
         #   pdf.text l(:label_invoice), :align => :right, :style => :bold, :size => 30
@@ -106,16 +81,15 @@ module RedmineInvoices
 
         #   pdf.fill_color "000000"
 
-        # # pdf.grid([1,0], [1,1]).bounding_box do
-        #   pdf.table invoice_data, :cell_style => {:padding => [-3, 5, 3, 5], :borders => []} do |t|
-        #     t.columns(0).font_style = :bold
-        #     # t.columns(0).text_color = "990000"
-        #     t.columns(0).width = 100
-        #     t.columns(0).align = :right
-        #     t.columns(1).width = 150
-        #   end
-        # end
-        pdf.move_down(30)
+        # image = Rails.root.to_s +  "/plugins/redmine_contacts_invoices/assets/images/logo_bo.png"
+        # data = [[l(:text_director), {:image => image, :fit => [210, 315]}, l(:text_director_fio)]]
+        # pdf.table data, :width => pdf.bounds.width, :column_widths => {0 => 100, 2 => 180}, 
+        #                 :cell_style => {:valign => :center} do
+        #   cells.borders = []
+        #   columns(0).align = :right
+        # end 
+
+        pdf.move_down(40)
 
         pdf.text l(:text_payment_example), :style => :bold, :align => :center
         pdf.move_down(10)
