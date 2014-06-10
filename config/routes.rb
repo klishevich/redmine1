@@ -29,7 +29,9 @@ RedmineApp::Application.routes.draw do
   match '/issues/preview/new/:project_id', :to => 'previews#issue', :as => 'preview_new_issue', :via => [:get, :post, :put]
   match '/issues/preview/edit/:id', :to => 'previews#issue', :as => 'preview_edit_issue', :via => [:get, :post, :put]
   match '/issues/preview', :to => 'previews#issue', :as => 'preview_issue', :via => [:get, :post, :put]
-
+  
+  # redirect from overview to wiki
+  get 'projects/:id', to: redirect('/projects/%{id}/wiki'), constraints: lambda{|req|  !req.env["REQUEST_URI"].include? "new"}
   match 'projects/:id/wiki', :to => 'wikis#edit', :via => :post
   match 'projects/:id/wiki/destroy', :to => 'wikis#destroy', :via => [:get, :post]
 
