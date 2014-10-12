@@ -178,8 +178,9 @@ module RedmineInvoices
 
         pdf.move_down(40)
 
+        due_date = invoice.due_date ? format_date(invoice.due_date) : ""
         pdf.text l(:label_akt) + " N " + invoice.order_number + " " + 
-                 l(:text_from) + " " + format_date(invoice.due_date), :style => :bold, 
+                 l(:text_from) + " " + due_date, :style => :bold, 
                  :size => 16, :align => :center
         pdf.text l(:text_akt_about), :size => 12, :align => :center         
         pdf.move_down(20)    
