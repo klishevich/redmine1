@@ -28,8 +28,8 @@
 
 <div class="splitcontentright">
   <p><%= f.text_field :order_number, :label => l(:field_invoice_order_number) %> </p>
+  <p><%= f.text_field :due_date, :label => l(:field_invoice_due_date), :size => 12 %><%= calendar_for('invoice_due_date') %> </p>  
   <p><%= f.text_field :invoice_date, :size => 12, :required => true %><%= calendar_for('invoice_invoice_date') %> </p>
-  <p><%= f.text_field :due_date, :label => l(:field_invoice_due_date), :size => 12 %><%= calendar_for('invoice_due_date') %> </p>
   <p><%= f.select :currency, collection_for_currencies_select, :label => l(:field_invoice_currency), :include_blank => true  %></p>
   <p>
     <%= f.text_field :discount, :label => l(:field_invoice_discount), :size => 10 %>

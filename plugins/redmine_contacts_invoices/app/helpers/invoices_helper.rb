@@ -217,4 +217,8 @@ module InvoicesHelper
     RedmineInvoices::InvoiceReports.invoice_to_pdf_prawn(invoice, RedmineInvoices::TEMPLATE_CLASSIC)
   end
 
+  def akt_to_pdf(invoice)
+    RedmineInvoices::InvoiceReports.akt_to_pdf_prawn(invoice, RedmineInvoices::TEMPLATE_CLASSIC)
+  end  
+
 end

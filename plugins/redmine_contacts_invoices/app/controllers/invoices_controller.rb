@@ -91,7 +91,13 @@ class InvoicesController < ApplicationController
       format.html
       format.api
       format.pdf do
-        send_data(invoice_to_pdf(@invoice), :type => 'application/pdf', :filename => @invoice.filename, :disposition => 'inline')
+        if params[:pdftype] == '1' 
+          send_data(invoice_to_pdf(@invoice), :type => 'application/pdf', :filename => @invoice.filename, :disposition => 'inline')
+        elsif params[:pdftype] == '2'
+          send_data(akt_to_pdf(@invoice), :type => 'application/pdf', :filename => @invoice.filename, :disposition => 'inline')
+        else
+          send_data(invoice_to_pdf(@invoice), :type => 'application/pdf', :filename => @invoice.filename, :disposition => 'inline')
+        end
       end
     end
   end

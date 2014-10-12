@@ -32,6 +32,14 @@ module RedmineInvoices
         s
       end
 
+      def akt_to_pdf_prawn(invoice, type)
+        saved_language = User.current.language
+        set_language_if_valid(invoice.language || User.current.language)
+        s = akt_to_pdf_classic(invoice)
+        set_language_if_valid(saved_language)
+        s
+      end      
+
       def invoice_to_pdf_classic(invoice)
 
         # InvoiceReport.new.to_pdf(invoice)
@@ -127,6 +135,90 @@ module RedmineInvoices
 
         pdf.render
       end
+
+      def akt_to_pdf_classic(invoice)
+
+        # InvoiceReport.new.to_pdf(invoice)
+        pdf = Prawn::Document.new(:info => {
+            :Title => "#{l(:label_invoice)} - #{invoice.number}",
+            :Author => User.current.name,
+            :Producer => InvoicesSettings[:invoices_company_name, invoice.project].to_s,
+            :Subject => "Invoice",
+            :Keywords => "invoice",
+            :Creator => InvoicesSettings[:invoices_company_name, invoice.project].to_s,
+            :CreationDate => Time.now,
+            :TotalAmount => price_to_currency(invoice.amount, invoice.currency, :converted => false, :symbol => false),
+            :TaxAmount => price_to_currency(invoice.tax_amount, invoice.currency, :converted => false, :symbol => false),
+            :Discount => price_to_currency(invoice.discount_amount, invoice.currency, :converted => false, :symbol => false)
+            },
+            :margin => [50, 50, 60, 50])
+        contact = invoice.contact || Contact.new(:first_name => '[New client]', :address_attributes => {:street1 => '[New client address]'}, :phone => '[phone]')
+
+        fonts_path = "#{Rails.root}/plugins/redmine_contacts_invoices/lib/fonts/"
+        pdf.font_families.update(
+               "FreeSans" => { :bold => fonts_path + "FreeSansBold.ttf",
+                               :italic => fonts_path + "FreeSansOblique.ttf",
+                               :bold_italic => fonts_path + "FreeSansBoldOblique.ttf",
+                               :normal => fonts_path + "FreeSans.ttf" })
+
+        # pdf.stroke_bounds
+        pdf.font("FreeSans", :size => 9)
+        # pdf.font("Times-Roman")
+        pdf.default_leading -5
+        #header
+        logo_bo_image = Rails.root.to_s +  "/plugins/redmine_contacts_invoices/assets/images/logo_bo.png"
+        pdf.image logo_bo_image
+        pdf.bounding_box [pdf.bounds.width - 450, pdf.bounds.height + 10], :width => 450 do
+          pdf.text InvoicesSettings[:invoices_company_name, invoice.project].to_s, :size => 16
+          pdf.move_down(5)
+          pdf.text InvoicesSettings[:invoices_company_representative, invoice.project].to_s if InvoicesSettings[:invoices_company_representative, invoice.project]
+          pdf.text_box "#{InvoicesSettings[:invoices_company_info, invoice.project].to_s}",
+            :at => [0, pdf.cursor], :width => 140
+        end
+
+        pdf.move_down(40)
+
+        pdf.text l(:label_akt) + " N " + invoice.order_number + " " + 
+                 l(:text_from) + " " + format_date(invoice.due_date), :style => :bold, 
+                 :size => 16, :align => :center
+        pdf.text l(:text_akt_about), :size => 12, :align => :center         
+        pdf.move_down(20)    
+
+        pdf.text l(:text_supplier), :size => 12     
+        pdf.move_down(5)
+        pdf.text "#{l(:text_customer)}: #{contact.name}", :size => 12    
+        pdf.move_down(10)        
+
+        classic_table(pdf, invoice)
+
+        pdf.text l(:text_vsego_uslug) + ": " + invoice.description, :size => 12
+        pdf.move_down(10)        
+        pdf.text l(:text_no_nds)
+        pdf.move_down(10)
+        pdf.text l(:text_usn)
+        pdf.move_down(20)
+        pdf.text l(:text_pretensii_net)
+        pdf.move_down(30)        
+
+        data = [ [l(:text_supplier2), l(:text_customer2)],
+                 [l(:text_director_bo), "_____________________________________"],
+                 ["__________________ " + l(:text_director_fio), "__________________ / __________________"],
+                 [l(:text_mp), l(:text_mp)]
+               ]
+        pdf.table data, :width => pdf.bounds.width,
+                        :column_widths => {0 => 250} do
+          cells.borders = []
+          row(3).style(:padding_left => 80)
+        end
+
+        pdf.number_pages "<page>/<total>", {:at => [pdf.bounds.right - 150, -10], :width => 150,
+                  :align => :right} if pdf.page_number > 1
+        pdf.repeat(lambda{ |pg| pg > 1}) do
+           pdf.draw_text "##{invoice.number}", :at => [0, -20]
+        end
+
+        pdf.render
+      end      
 
       def status_stamp(pdf, invoice)
         case invoice.status_id

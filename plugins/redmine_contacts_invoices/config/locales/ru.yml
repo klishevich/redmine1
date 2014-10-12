@@ -4,6 +4,7 @@ ru:
 
   label_invoice_plural: Счета
   label_invoice: Счет
+  label_akt: Акт  
   label_invoice_new: Новый счет
   label_invoice_edit: Редактировать счет
   label_invoice_status: Статус
@@ -48,7 +49,7 @@ ru:
   field_invoice_number: Номер счета
   field_invoice_date: Дата счета
   field_invoice_contact: Клиент
-  field_invoice_due_date: Срок оплаты
+  field_invoice_due_date: Дата акта
   field_invoice_amount: Сумма
   field_invoice_discount: Скидка
   field_invoice_assigned_to: Ответственный
@@ -167,7 +168,8 @@ ru:
   #3.0.0
   label_invoice_templates: Шаблоны
   label_invoice_custom_template: Пользовательский шаблон счета
-  label_invoice_pdf: PDF
+  label_invoice_pdf: Счет
+  label_akt_pdf: Акт
   label_invoice_public_link: Публичная ссылка
   label_invoice_template_classic: "Классический"
   label_invoice_template_modern: "Модерн"
@@ -182,7 +184,7 @@ ru:
   permission_add_expenses: Добавление расходов
 
   #3.1.0
-  field_invoice_order_number: Номер заказа
+  field_invoice_order_number: Номер акта
   label_invoice_send_by_email: Отправить счет по email
   permission_send_invoices: Отправлять email
   label_invoice_mail_to: Кому
@@ -198,15 +200,26 @@ ru:
   text_reciever: Получатель
   text_reciever_rekv: 'ИНН/КПП 5408290560/540801001 ООО "Бизнес-Оптимизация"'
   text_account: 'Сч. No'
-  text_account_rekv: '40702810708400000708'
+  text_account_rekv: '40702810302880000716'
   text_bank: Банк получателя
   text_bik: БИК
-  text_bik_rekv: '046577859'
-  text_bank_rekv: '"Банк24.ру" (ОАО) г.Екатеринбург'
-  text_bank_account_rekv: '30101810600000000859'
+  text_bik_rekv: '044525593'
+  text_bank_rekv: 'ОАО "АЛЬФА-БАНК"'
+  text_bank_account_rekv: '30101810200000000593'
   text_from: 'от'
   text_to_pay: 'К оплате'
   text_no_nds: 'Без НДС'
   text_usn: ' (ООО "Бизнес-Оптимизация" работает по УСН)'
   text_director: 'Директор'
-  text_director_fio: '(М.А. Клишевич)' 
+  text_director_fio: '/ М.А. Клишевич' 
+
+  #for akt
+  text_akt_about: 'о приемке выполненных работ (оказанных услуг)'
+  text_supplier: 'Исполнитель: ООО "Бизнес-Оптимизация"'
+  text_supplier2: 'ИСПОЛНИТЕЛЬ'
+  text_customer: 'Заказчик'
+  text_customer2: 'ЗАКАЗЧИК'  
+  text_vsego_uslug: 'Всего оказано услуг на сумму'
+  text_pretensii_net: 'Вышеперечисленные работы (услуги) выполнены полностью и в срок. Заказчик претензий по объему, качеству и срокам оказания услуг претензий не имеет.'
+  text_director_bo: 'Директор ООО "Бизнес-Оптимизация"'
+  text_mp: 'М.П.'
