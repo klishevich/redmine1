@@ -198,13 +198,13 @@ ru:
   #my custom stuff
   text_payment_example: Образец заполнения платежного поручения
   text_reciever: Получатель
-  text_reciever_rekv: 'ИНН/КПП 5408290560/540801001 ООО "Бизнес-Оптимизация"'
+  text_reciever_rekv: 'ИНН/КПП 5408290560/772101001 ООО "Бизнес-Оптимизация"'
   text_account: 'Сч. No'
   text_account_rekv: '40702810302880000716'
   text_bank: Банк получателя
   text_bik: БИК
   text_bik_rekv: '044525593'
-  text_bank_rekv: 'ОАО "АЛЬФА-БАНК"'
+  text_bank_rekv: 'АО "АЛЬФА-БАНК"'
   text_bank_account_rekv: '30101810200000000593'
   text_from: 'от'
   text_to_pay: 'К оплате'
